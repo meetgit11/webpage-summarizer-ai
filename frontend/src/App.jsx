@@ -1,93 +1,108 @@
 import { useState } from "react";
 
-function App(){
+function App() {
 
-  const[url, setUrl]=useState("");
-  const[summary, setSummary]=useState("");
+  const [url, setUrl] = useState("");
+
+  const [summary, setSummary] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState("");
+
+
   const handleSummarize = async () => {
 
-  try {
+    if (!url) {
+      setError("Please enter a URL");
+      return;
+    }
 
-    const response = await fetch("http://127.0.0.1:5000/summarize");
+    try {
 
-    const data = await response.json();
+      setLoading(true);
 
-    setSummary(data.summary);
+      setError("");
 
-  } catch (error) {
+      setSummary("");
 
-    setSummary("Error connecting to backend.");
+      const response = await fetch(
+        "http://127.0.0.1:5000/summarize",
+        {
+          method: "POST",
 
-  }
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-};
-    return (
-    <div style={{
-      minHeight:"100vh",
-      backgroundColor:"#0f172a",
-      color: "white",
-      display: "flex",
-      justifyContent: "center",
-      fontFamily: "Arial"
-    }}>
+          body: JSON.stringify({
+            url: url,
+          }),
+        }
+      );
 
-      <div style={{
-        width:"500px",
-        padding:"30px",
-        backgroundColor: "1e293b",
-        borderRadius: "10px"
-      }}>
+      const data = await response.json();
 
-        <h1 style={{
-          textAlign: "center",
-          marginBottom: "20px",
-          fontSize:"48px",
-          lineHeight:"1.2",
-        }}>
-          AI Webpage Summarizer 
-        </h1>
-        <input
-         type="text"
-         placeholder="Paste webpage URL here.."
-         value={url}
-         onChange={(e)=>setUrl(e.target.value)}
-         style={{
-           width:"100%",
-           padding:"12px",
-           borderRadius:"5px",
-           border:"none",
-           marginBottom:"15px"
-          }}
-        />
-        <button 
-        onClick={handleSummarize}
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setSummary(data.summary);
+      }
+
+    } catch (err) {
+
+      setError("Something went wrong");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  };
+
+
+  return (
+    <div style={{ padding: "40px" }}>
+
+      <h1>Web Page Summarizer AI</h1>
+
+      <input
+        type="text"
+        placeholder="Enter webpage URL..."
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
         style={{
-          width:"100%",
-          padding:"12px",
-          backgroundColor:"#3b82f6",
-          color:"white",
-          border:"none",
-          borderRadius:"5px",
-          cursor:"pointer",
-          fontSize:"16px"
-        }}>
-          Summarize
-        </button>
+          width: "400px",
+          padding: "10px",
+          marginRight: "10px",
+        }}
+      />
 
-        <div style={{
-          marginTop:"20px",
-          backgroundColor:"#334155",
-          padding:"15px",
-          borderRadius:"5px",
-          minHeight:"120px"
-        }}>
-          {summary}
+      <button onClick={handleSummarize}>
+        Summarize
+      </button>
+
+      <br />
+      <br />
+
+      {loading && <p>Generating summary...</p>}
+
+      {error && (
+        <p style={{ color: "red" }}>
+          {error}
+        </p>
+      )}
+
+      {summary && (
+        <div>
+          <h2>Summary</h2>
+
+          <p>{summary}</p>
         </div>
-      
+      )}
 
-      </div>
     </div>
-
   );
 }
+
 export default App;
