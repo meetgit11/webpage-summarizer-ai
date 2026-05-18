@@ -1,21 +1,31 @@
 import requests
 from bs4 import BeautifulSoup
+from utils.helpers import clean_text
 
 
 def scrape_website(url):
-    try:
-        response = requests.get(url)
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 "
+            "(Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 "
+            "(KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        )
+    }
 
-        soup = BeautifulSoup(response.text, "html.parser")
+    response = requests.get(url, headers=headers, timeout=10)
 
-        paragraphs = soup.find_all("p")
+    if response.status_code != 200:
+        raise Exception("Failed to fetch webpage")
 
-        text = ""
+    soup = BeautifulSoup(response.text, "html.parser")
 
-        for p in paragraphs:
-            text += p.get_text()
+    for script in soup(["script", "style"]):
+        script.extract()
 
-        return text[:5000]
+    text = soup.get_text(separator=" ")
 
-    except Exception as e:
-        return f"Error scraping website: {str(e)}"
+    cleaned_text = clean_text(text)
+
+    return cleaned_text[:5000]
