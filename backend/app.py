@@ -1,10 +1,19 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
 from scraper import scrape_website
 from summarizer import generate_summary
 
 app = Flask(__name__)
+
 CORS(app, resources={r"/*": {"origins": "*"}})
+
+
+@app.route("/")
+def home():
+    return jsonify({
+        "message": "Backend is running"
+    })
 
 
 @app.route("/summarize", methods=["POST"])
