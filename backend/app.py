@@ -8,13 +8,13 @@ CORS(app)
 @app.route("/")
 def home():
     return jsonify({
-        "message": "Backend Working"
+        "message": "Backend Working Successfully"
     })
 
 @app.route("/summarize", methods=["POST"])
 def summarize():
     return jsonify({
-        "summary": "Test successful"
+        "summary": "Test summary working"
     })
 
 if __name__ == "__main__":
