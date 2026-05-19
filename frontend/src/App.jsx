@@ -42,6 +42,11 @@ function App() {
         }
       );
 
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Request failed");
+      }
       const data = await response.json();
 
       if (data.error) {
@@ -50,12 +55,9 @@ function App() {
         setSummary(data.summary);
       }
 
-    } catch (err) {
-
-      console.log(err);
-
-      setError("Something went wrong.");
-
+    } catch (error) {
+        console.error(error);
+        setError(error.message);
     } finally {
 
       setLoading(false);

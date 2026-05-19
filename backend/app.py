@@ -4,7 +4,7 @@ from scraper import scrape_website
 from summarizer import generate_summary
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 @app.route("/summarize", methods=["POST"])

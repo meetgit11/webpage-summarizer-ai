@@ -36,6 +36,11 @@ def generate_summary(text):
 
     data = response.json()
 
+    print(data)
+
+    if "choices" not in data:
+        raise Exception(data.get("error", {}).get("message", "OpenRouter API Error"))
+
     summary = data["choices"][0]["message"]["content"]
 
     return summary
