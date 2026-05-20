@@ -39,7 +39,13 @@ def summarize():
 
         paragraphs = soup.find_all("p")
 
-        text = " ".join([p.get_text() for p in paragraphs])
+        text = " ".join(
+            [p.get_text(strip=True) for p in paragraphs]
+        )
+
+        text = text.replace("\n", " ")
+
+        text = " ".join(text.split())
 
         text = text[:3000]
 
@@ -51,9 +57,8 @@ URL:
 {url}
 
 Extracted Content Preview:
-{text[:500]}
 
-AI summary feature will be connected properly in next phase.
+{text[:3000]}
 """
 
         return jsonify({
