@@ -49,7 +49,7 @@ def summarize():
         }
 
         payload = {
-            "model": "mistralai/mistral-7b-instruct",
+            "model": "deepseek/deepseek-chat",
             "messages": [
                 {
                     "role": "user",
@@ -74,7 +74,7 @@ def summarize():
             }), 500
 
         summary = result["choices"][0]["message"]["content"]
-        
+
     except Exception as e:
         return jsonify({
             "error": str(e)
