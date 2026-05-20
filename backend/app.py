@@ -66,12 +66,15 @@ def summarize():
 
         result = response.json()
 
+        print(result)
+
+        if "choices" not in result:
+            return jsonify({
+                "error": result
+            }), 500
+
         summary = result["choices"][0]["message"]["content"]
-
-        return jsonify({
-            "summary": summary
-        })
-
+        
     except Exception as e:
         return jsonify({
             "error": str(e)
