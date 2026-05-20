@@ -32,7 +32,7 @@ def summarize():
                 "error": "URL is required"
             }), 400
 
-        # Fetch webpage
+        # Fetch webpage content
         webpage = requests.get(url)
 
         soup = BeautifulSoup(webpage.text, "html.parser")
@@ -43,37 +43,22 @@ def summarize():
 
         text = text[:3000]
 
-        headers = {
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "Content-Type": "application/json"
-        }
+        # Temporary stable summary
+        summary = f"""
+Webpage fetched successfully.
 
-        payload = {
-            "model": "openai/gpt-3.5-turbo",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": f"Summarize this webpage:\n\n{text}"
-                }
-            ]
-        }
+URL:
+{url}
 
-        response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            headers=headers,
-            json=payload
-        )
+Extracted Content Preview:
+{text[:500]}
 
-        result = response.json()
+AI summary feature will be connected properly in next phase.
+"""
 
-        print(result)
-
-        if "choices" not in result:
-            return jsonify({
-                "error": result
-            }), 500
-
-        summary = "AI summary generated successfully."
+        return jsonify({
+            "summary": summary
+        })
 
     except Exception as e:
         return jsonify({
