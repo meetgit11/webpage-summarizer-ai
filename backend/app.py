@@ -43,7 +43,7 @@ def summarize():
         paragraphs = soup.find_all("p")
 
         text = " ".join(
-            [p.get_text(strip=True) for p in paragraphs]
+            [p.get_text(separator=" ", strip=True) for p in paragraphs]
         )
 
         text = text.replace("\n", " ")
