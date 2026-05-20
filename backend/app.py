@@ -33,8 +33,11 @@ def summarize():
             }), 400
 
         # Fetch webpage content
-        webpage = requests.get(url)
+        headers = {
+            "User-Agent": "Mozilla/5.0"
+        }
 
+        webpage = requests.get(url, headers=headers)
         soup = BeautifulSoup(webpage.text, "html.parser")
 
         paragraphs = soup.find_all("p")
@@ -58,7 +61,7 @@ URL:
 
 Extracted Content Preview:
 
-{text[:3000]}
+{text[:1000]}
 """
 
         return jsonify({
