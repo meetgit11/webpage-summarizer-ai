@@ -50,7 +50,7 @@ def summarize():
 
         text = " ".join(text.split())
 
-        text = text[:3000]
+        text = text[:1000]
 
         # Temporary stable summary
         summary = f"""
