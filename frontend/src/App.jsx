@@ -3,7 +3,7 @@ import { useState } from "react";
 // Read the backend URL from the Vite env variable.
 // In local dev: VITE_API_URL=http://localhost:5000
 // In production: VITE_API_URL=https://your-backend.onrender.com
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = "http://127.0.0.1:5000";
 
 export default function App() {
   const [url, setUrl] = useState("");
@@ -29,25 +29,28 @@ export default function App() {
     setFetchError(null);
 
     try {
-      const response = await fetch(`${API_URL}/summarize`, {
+      const response = await fetch("http://127.0.0.1:5000/summarize", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: trimmed }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          url: trimmed,
+        }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        // Backend returned a 4xx/5xx with an error message
-        setFetchError(data.error || "Something went wrong on the server.");
-      } else {
-        setResult(data);
+        setFetchError(data.error || "Something went wrong");
+        return;
       }
+
+      setResult(data);
+
     } catch (err) {
-      // Network error (backend down, CORS, etc.)
-      setFetchError(
-        "Could not reach the server. Make sure the backend is running and the API URL is correct."
-      );
+        console.error(err);
+        setFetchError(String(err));
     } finally {
       setLoading(false);
     }
@@ -168,7 +171,7 @@ export default function App() {
 
       {/* ── Footer ─────────────────────────────────────────────────── */}
       <footer className="mt-16 text-gray-600 text-xs text-center">
-        Powered by Gemini AI · Flask · React · Deployed on Render
+        Powered by OpenRouter · Flask · React · Deployed on Render
       </footer>
 
     </div>
